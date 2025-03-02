@@ -1,0 +1,2582 @@
+/* Instagram-style for ChaosScroll */
+:root {
+  --ig-background: #000000;
+  --ig-border: #333333;
+  --ig-text: #ffffff;
+  --ig-text-secondary: #aaaaaa;
+  --ig-blue: #0095f6;
+  --ig-like: #ed4956;
+  --ig-card-radius: 12px;
+  --ig-shadow: 0 1px 2px rgba(255, 255, 255, 0.1);
+  --ig-shadow-hover: 0 8px 24px rgba(255, 255, 255, 0.1);
+  
+  /* Content type colors */
+  --fact-color: #3897f0;
+  --joke-color: #bc2a8d;
+  --quote-color: #4CAF50;
+  --word-color: #5851db;
+  --trivia-color: #ffd700;
+  --image-color: #fd1d1d;
+  --meme-color: #833ab4;
+}
+
+body {
+  margin: 0;
+  background-color: var(--ig-background);
+  color: var(--ig-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.chaos-scroll-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: var(--ig-background);
+}
+
+/* Instagram-style feed layout */
+.text-display {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 0;
+}
+
+/* Card styling - Instagram style */
+.chaos-item {
+  background: #222222;
+  border-radius: var(--ig-card-radius);
+  border: 1px solid var(--ig-border);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  border-left: 4px solid transparent;
+}
+
+.chaos-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--ig-shadow-hover);
+}
+
+/* Card header like Instagram post */
+.chaos-item::before {
+  content: "Chaos Feed";
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ig-text);
+  border-bottom: 1px solid var(--ig-border);
+}
+
+/* Card content wrapper */
+.chaos-content {
+  padding: 24px;
+  position: relative;
+}
+
+.chaos-item p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ig-text);
+}
+
+/* Content type specific styles are now handled by data-type attributes */
+
+/* Image cards - Instagram style */
+.image {
+  padding: 0;
+  overflow: hidden;
+}
+
+.image::before {
+  content: "Photo • Chaos Feed";
+}
+
+.chaos-image {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+}
+
+.chaos-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.chaos-item:hover .chaos-image img {
+  transform: scale(1.05);
+}
+
+/* Voice button - Instagram style */
+.voice-button {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ig-blue);
+  color: white;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 105, 214, 0.3);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+  z-index: 5;
+}
+
+.voice-button:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 105, 214, 0.4);
+}
+
+/* Reaction buttons */
+.reaction-buttons {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ig-border);
+  background: #1a1a1a;
+  overflow-x: auto;
+}
+
+.reaction-button {
+  background: transparent;
+  border: 1px solid var(--ig-border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  color: var(--ig-text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reaction-button:hover {
+  background: #333333;
+  transform: translateY(-2px);
+}
+
+.reaction-emoji {
+  font-size: 16px;
+}
+
+.reaction-count {
+  background: var(--ig-blue);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Loading indicator */
+.loading-trigger {
+  text-align: center;
+  padding: 32px;
+  color: var(--ig-text-secondary);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Loading animation */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+.loading-trigger::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--ig-blue);
+  animation: pulse 1.2s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Content type specific styles */
+.fact {
+  border-left: 4px solid var(--fact-color);
+}
+
+.fact::before {
+  content: "Fact • Chaos Feed";
+}
+
+/* Fact content styling */
+.fact-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fact-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--fact-color);
+  margin: 0;
+}
+
+.fact-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.joke {
+  border-left: 4px solid var(--joke-color);
+}
+
+.joke::before {
+  content: "Joke • Chaos Feed";
+}
+
+.quote {
+  border-left: 4px solid var(--quote-color);
+}
+
+.quote::before {
+  content: "Quote • Chaos Feed";
+}
+
+.word {
+  border-left: 4px solid var(--word-color);
+}
+
+.word::before {
+  content: "Word • Chaos Feed";
+}
+
+/* Word content styling */
+.word-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ig-border);
+}
+
+.definition-item:last-child {
+  border-bottom: none;
+}
+
+.part-of-speech {
+  display: inline-block;
+  background: rgba(88, 81, 219, 0.1);
+  color: var(--word-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  border: 2px solid var(--word-color);
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.part-of-speech:hover {
+  background: var(--word-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(88, 81, 219, 0.2);
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+  padding-left: 12px;
+  border-left: 2px solid var(--ig-text-secondary);
+}
+
+.trivia {
+  border-left: 4px solid var(--trivia-color);
+}
+
+.trivia::before {
+  content: "Trivia • Chaos Feed";
+}
+
+.image {
+  border-left: 4px solid var(--image-color);
+}
+
+.image::before {
+  content: "Photo • Chaos Feed";
+}
+
+.meme {
+  border-left: 4px solid var(--meme-color);
+}
+
+.meme::before {
+  content: "Meme • Chaos Feed";
+}
+
+.meme-item {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Removing duplicate meme-item::before */
+
+.meme-item .chaos-image,
+.meme-container {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
+  overflow: hidden;
+}
+
+.meme-item .chaos-image img,
+.meme-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  border-radius: 0;
+}
+
+/* Removed meme caption styling */
+
+.trivia {
+  border-left: 4px solid #ffd700;
+}
+
+.trivia::before {
+  content: "Trivia • Chaos Feed";
+}
+
+.trivia-item .trivia-question {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.trivia-item .trivia-answer {
+  font-size: 16px;
+  color: var(--ig-text-secondary);
+  padding-top: 16px;
+  border-top: 1px solid var(--ig-border);
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.trivia-item .trivia-answer.show-answer {
+  opacity: 1;
+  max-height: 500px;
+  margin-top: 16px;
+}
+
+.quote-item {
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0 0 0 20px;
+  position: relative;
+}
+
+.quote-text {
+  margin-bottom: 12px;
+  color: var(--ig-text);
+}
+
+.quote-author {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--quote-color);
+  text-align: right;
+  margin-top: 12px;
+}
+
+.quote-item::before {
+  content: "\201C";
+  font-size: 48px;
+  color: var(--quote-color);
+  position: absolute;
+  left: -8px;
+  top: -16px;
+}
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Filter bar styles */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  background: #222222;
+  border: 1px solid var(--ig-border);
+  border-radius: var(--ig-card-radius);
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--ig-border);
+  border-radius: 20px;
+  color: var(--ig-text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background: var(--ig-blue);
+  border-color: var(--ig-blue);
+  transform: translateY(-2px);
+}
+
+.filter-emoji {
+  font-size: 16px;
+}
+
+.filter-label {
+  font-weight: 500;
+}
+
+/* Mobile optimizations for filter bar */
+@media (max-width: 768px) {
+  .filter-bar {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .filter-button {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .filter-emoji {
+    font-size: 14px;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
+
+/* Post time */
+.chaos-item::after {
+  content: none;
+  display: none;
+}
+
+.image-credit {
+  position: relative;
+  display: block;
+  background: #222222;
+  color: var(--ig-text-secondary);
+  padding: 12px 16px;
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+/* Word item styling */
+.word-content {
+  padding: 8px 0;
+}
+
+.word-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--word-color);
+  margin: 0 0 16px 0;
+}
+
+.definitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.definition-item {
+  padding: 12px;
+  background: rgba(88, 81, 219, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(88, 81, 219, 0.2);
+}
+
+.part-of-speech {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--word-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.definition {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--ig-text);
+}
+
+.example {
+  font-size: 14px;
+  color: var(--ig-text-secondary);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+/* Quote styling already defined above */
+
+.image-credit {
+  padding: 16px 24px;
+  background: #1a1a1a;
+  color: var(--ig-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--ig-border);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .chaos-scroll-container {
+    padding: 16px;
+    max-width: 100%;
+  }
+  
+  .text-display {
+    gap: 24px;
+  }
+  
+  .chaos-item {
+    border-radius: var(--ig-card-radius);
+    margin-bottom: 8px;
+  }
+  
+  .chaos-item:hover {
+    transform: translateY(-4px);
+  }
+  
+  .reaction-buttons {
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+}
+
+/* Double-tap effect animation */
+@keyframes heart-burst {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.6); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.chaos-item {
+  position: relative;
+}
+
+.chaos-item.tapped::after {
+  content: "❤️";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 80px;
+  z-index: 10;
+  animation: heart-burst 0.8s forwards;
+  pointer-events: none;
+}
